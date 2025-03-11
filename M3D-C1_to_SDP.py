@@ -22,24 +22,29 @@ except:pass
 
 
 import xarray as xr
-    
-def get_fields_from_C1(filename, n) :
+import numpy as np
+
+def save_C1_SDP_format(filename='/nobackup1/wenhaw42/Linear/01_n1_test_cases/1000_bate1.0_constbz_0_cp0501/C1.h5', n=1) :
     
     # Get necessary variables from file .h5
     psi,B1,B0,R,Z,rmagx,zmagx,PsiLCFS,  ne, ne0, te, te0 = \
-         get_fields_from_C1(C1file_name,n,False)
+         get_fields_from_C1(filename,n,False)
     
+    # convert B(R,phi,Z) to ||B||
+    B1 = np.sqrt( B1[0]**2 + B1[1]**2 + B1[2]**2 )
+    B0 = np.sqrt( B0[0]**2 + B0[1]**2 + B0[2]**2 )
     # Save in SDP format
     ds = xr.Dataset(data_vars = dict(\
-             rr=(['r'],R), zz=(['z'],Z), ne=(['r','z'],ne), \
-             te=(['r','z'],te), bb=(['r','z'], B1), ) )
+             rr=(['r'],R), zz=(['z'],Z), ne=(['r','z'],ne.data), \
+             te=(['r','z'],te.data), bb=(['r','z'], B1), ) )
     ds0 = xr.Dataset(data_vars = dict(\
-             rr=(['r'],R), zz=(['z'],Z), ne=(['r','z'],ne0), \
-             te=(['r','z'],te0), bb=(['r','z'], B0), ) )
+             rr=(['r'],R), zz=(['z'],Z), ne=(['r','z'],ne0.data), \
+             te=(['r','z'],te0.data), bb=(['r','z'], B0), ) )
     
     ds0.to_netcdf('C1.h5_equ_ufile.cdf')
     ds.to_netcdf('C1.h5_{0:0>4}_ufile.cdf'.format(1))
-    
+
+######################################################################3
 def get_fields_from_C1(filename,n,phi=0,slice=0):
     # Slice acts as timepoint
     # Get psi grid, B grid, R,Z coords
@@ -54,7 +59,10 @@ def get_fields_from_C1(filename,n,phi=0,slice=0):
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
     b_field0 = C1py.read_field('bfield', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=True,idiff=False)
-    
+    # print(b_field.data.shape,b_field.coords['R'].values.shape)
+    # raise SyntaxError
+
+
     ne = C1py.read_field('ne', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
     ne0 = C1py.read_field('bfneield', slice=slice, filename=filename, points=200,
@@ -76,3 +84,6 @@ def get_fields_from_C1(filename,n,phi=0,slice=0):
     
     return psi.data,b_field.data,b_field0.data,psi.coords['R'].values,\
         psi.coords['Z'].values, rmagx, zmagx, psi_lcfs, ne, ne0, te, te0
+
+###################################################
+if __name__ == '__main__': save_C1_SDP_format()

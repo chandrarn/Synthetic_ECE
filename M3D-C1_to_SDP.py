@@ -56,7 +56,7 @@ def get_fields_from_C1(filename,n,phi=0,slice=0):
 
     ne = C1py.read_field('ne', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
-    ne0 = C1py.read_field('bfneield', slice=slice, filename=filename, points=200,
+    ne0 = C1py.read_field('ne', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=True,idiff=False)
     
     te = C1py.read_field('te', slice=slice, filename=filename, points=200,

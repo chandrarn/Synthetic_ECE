@@ -13,16 +13,7 @@ Created on Mon Mar 10 17:16:56 2025
 """
 
 
-# Engaging cluster library connections
-from sys import path;path.append('/orcd/home/002/rianc/')
-try:
-    import C1py
-    import fio_py
-except:pass
-
-
-import xarray as xr
-import numpy as np
+from header_SDP import C1py, fio_py, np, xr
 
 def save_C1_SDP_format(filename='/nobackup1/wenhaw42/Linear/01_n1_test_cases/1000_bate1.0_constbz_0_cp0501/C1.h5', n=1) :
     

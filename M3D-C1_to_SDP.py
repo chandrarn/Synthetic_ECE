@@ -24,6 +24,11 @@ def save_C1_SDP_format(filename='/nobackup1/wenhaw42/Linear/01_n1_test_cases/100
     # convert B(R,phi,Z) to ||B||
     B1 = np.sqrt( B1[0]**2 + B1[1]**2 + B1[2]**2 )
     B0 = np.sqrt( B0[0]**2 + B0[1]**2 + B0[2]**2 )
+    
+    # build "Perturbed" version for later extraction
+    B1 = B1 + B0
+    ne = ne + ne0
+    te = te + te0
     # Save in SDP format
     ds = xr.Dataset(data_vars = dict(\
              rr=(['r'],R), zz=(['z'],Z), ne=(['r','z'],ne.data.T), \
@@ -46,21 +51,21 @@ def get_fields_from_C1(filename,n,phi=0,slice=0,debug=True):
                          rrange=None, zrange=None, iequil=1)
     
     
-    b_field = C1py.read_field('bfield', slice=slice, filename=filename, points=200,
-                        rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
+    b_field = C1py.read_field('bfield', slice=[slice,slice+1], filename=filename, points=200,
+                        rrange=None, zrange=None,phi=phi, iequil=None,idiff=True)
     b_field0 = C1py.read_field('bfield', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=True)
     # print(b_field.data.shape,b_field.coords['R'].values.shape)
     # raise SyntaxError
 
 
-    ne = C1py.read_field('ne', slice=slice, filename=filename, points=200,
-                        rrange=None, zrange=None,phi=phi+1, iequil=None,idiff=False)
+    ne = C1py.read_field('ne', slice=[slice,slice+1], filename=filename, points=200,
+                        rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
     ne0 = C1py.read_field('ne', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
     
-    te = C1py.read_field('te', slice=slice, filename=filename, points=200,
-                        rrange=None, zrange=None,phi=phi+1, iequil=None,idiff=False)
+    te = C1py.read_field('te', slice=[slice,slice+1], filename=filename, points=200,
+                        rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
     te0 = C1py.read_field('te', slice=slice, filename=filename, points=200,
                         rrange=None, zrange=None,phi=phi, iequil=None,idiff=False)
  

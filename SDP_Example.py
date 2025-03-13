@@ -63,7 +63,7 @@ def plot_profiles_resonances(p2d,pc,name):
     plt.setp(ax.get_xticklabels(), visible=False)
     #ax.xlabel('R(cm)')
     ax.grid()
-    ax1=ax.copy()
+    #ax1=ax.copy()
     
     ax=fig.add_subplot(3,3,7,sharex=ax)
     ax.plot(R1D, p2d.B0[mid_Z, :]*1e-4)

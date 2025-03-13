@@ -283,6 +283,6 @@ print(Te_samp.shape)
 
 
 ax.plot(Te_samp[:,0],Te_samp[:,1],'*',label=r'Reconst. T$_\mathrm{e}$')
-
+print(Te_samp)
 plt.show()
 fig.savefig('output_plots/Initial_SDP_M3D-C1.pdf',transparent=True)

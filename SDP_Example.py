@@ -38,7 +38,7 @@ me = cgs['m_e']
 
 ###############################################################################
 #####################################################################33333
-def plot_profiles_resonances(p2d,pc,name):
+def plot_profiles_resonances(p2d,pc,name,doLim=False):
     
     plt.close('Profiles_%s'%name)
     fig=plt.figure(num="Profiles_%s"%name)
@@ -63,6 +63,7 @@ def plot_profiles_resonances(p2d,pc,name):
     plt.setp(ax.get_xticklabels(), visible=False)
     #ax.xlabel('R(cm)')
     ax.grid()
+    if doLim: ax.set_xlim([190,240])
     ax1=ax
     
     ax=fig.add_subplot(3,3,7,sharex=ax)
@@ -71,6 +72,9 @@ def plot_profiles_resonances(p2d,pc,name):
     ax.set_ylabel('B [T]')
     ax.set_xlabel('R [cm]')
     ax.grid()
+    if doLim: 
+        ax.set_xlim([190,240])
+        ax.set_ylim([7,12])
     
     omega = 1e11*twopi
 
@@ -90,6 +94,9 @@ def plot_profiles_resonances(p2d,pc,name):
     ax.yaxis.set_label_position("right")
     ax.yaxis.tick_right()
     ax.grid()
+    if doLim: 
+        ax.set_xlim([190,240])
+        ax.set_ylim([60,800])
 
     plt.show()
     

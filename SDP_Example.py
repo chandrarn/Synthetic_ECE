@@ -30,7 +30,7 @@ from sdp.diagnostic.ecei.ecei2d import ECE2D, ECEImagingSystem, GaussianAntenna
 
 rcParams['figure.figsize'] = [9, 6]
 rcParams['font.size'] = 18
-rcParams.update(rcParamsDefault)
+#rcParams.update(rcParamsDefault)
 rc('font',**{'family':'serif','serif':['Palatino']})
 rc('font',**{'size':11})
 rc('text', usetex=True)

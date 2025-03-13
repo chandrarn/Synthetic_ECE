@@ -214,7 +214,7 @@ for r_samp in r_sample_values:
     print('Running sample: %d'%r_samp)
     #r_samp = np.array()
     m3d_pcp.set_coords([0,r_samp])
-    omega_m3d = 2*m3d_pcp.omega_ce
+    omega_m3d = 2*m3d_pcp.omega_ce[0]
     print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega_m3d))
     
     k_m3d = omega_m3d/c
@@ -248,11 +248,11 @@ for r_samp in r_sample_values:
     # Plotting emission spot
     emission_spot_m3d = ece_m3d.view_spot
     
-    plt.close('ECE New')
-    plt.figure(num='ECE New')
-    plt.contour(ece_m3d.X1D, ece_m3d.Y1D, emission_spot_m3d[:,:], levels=20)
+    # plt.close('ECE New')
+    # plt.figure(num='ECE New')
+    # plt.contour(ece_m3d.X1D, ece_m3d.Y1D, emission_spot_m3d[:,:], levels=20)
     
-    plt.show()
+    # plt.show()
     
     
     
@@ -262,12 +262,12 @@ for r_samp in r_sample_values:
     
     ece_m3d.X1D.shape
     
-    plt.close('Grid New')
-    plt.figure(num='Grid New')
-    plt.plot(ece_m3d.X1D)
-    plt.xlabel('array indices')
-    plt.ylabel('X(cm)')
-    plt.title('Auto mesh in X')
+    # plt.close('Grid New')
+    # plt.figure(num='Grid New')
+    # plt.plot(ece_m3d.X1D)
+    # plt.xlabel('array indices')
+    # plt.ylabel('X(cm)')
+    # plt.title('Auto mesh in X')
     
     
     
@@ -276,10 +276,12 @@ for r_samp in r_sample_values:
     print('M3D ',ece_m3d.Te/keV)
     Te_samp.append([r_samp,ece_m3d.Te/keV])
 
-ax = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
-
 Te_samp = np.array(Te_samp)
 print(Te_samp.shape)
+
+ax = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
+
+
 ax.plot(Te_samp[:,0],Te_samp[:,1],'*',label=r'Reconst. T$_\mathrm{e}$')
 
 plt.show()

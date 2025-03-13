@@ -28,7 +28,7 @@ from sdp.plasma.m3dc1.loader import M3DC1_Loader
 
 from sdp.diagnostic.ecei.ecei2d import ECE2D, ECEImagingSystem, GaussianAntenna
 
-rcParams['figure.figsize'] = [12, 9]
+rcParams['figure.figsize'] = [9, 6]
 rcParams['font.size'] = 18
 
 c = cgs['c']
@@ -212,7 +212,7 @@ r_sample_values = [230, 220, 210, 200, 190]
 
 for r_samp in r_sample_values:
     print('Running sample: %d'%r_samp)
-    r_samp = np.array()
+    #r_samp = np.array()
     m3d_pcp.set_coords([np.zeros((5,)),r_samp])
     omega_m3d = 2*m3d_pcp.omega_ce
     print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega_m3d))

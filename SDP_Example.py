@@ -206,7 +206,7 @@ m3d_profile.setup_interps()
 m3d_pcp = PlasmaCharProfile(m3d_profile)
 
 ax,fig = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
-
+plt.show()
 Te_samp = []
 r_sample_values = [230, 220, 210, 200, 190]
 

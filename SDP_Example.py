@@ -221,7 +221,7 @@ for r_samp in r_sample_values:
     ###############################################################
     # single frequency detector
     # waist_x: in propagation direction, where is "focal point"
-    detector_m3d = GaussianAntenna(omega_list=omega_m3d, k_list=k_m3d, power_list=[1,1,1,1,1], waist_x=230, waist_y=0, w_0y=1)
+    detector_m3d = GaussianAntenna(omega_list=[omega_m3d], k_list=[k_m3d], power_list=[1], waist_x=230, waist_y=0, w_0y=1)
     
     # Single Channel ECE2D
     

@@ -121,7 +121,7 @@ print(p2d_uni.physical_quantities())
 R0 = tp.Parameter2D['R_0']
 # calculate the local electron cyclotron frequency using the PlasmaCharProfile class
 pcp_uni = PlasmaCharProfile(p2d_uni)
-plot_profiles_resonances(p2d_uni,pcp_uni,'_Orig')
+# plot_profiles_resonances(p2d_uni,pcp_uni,'_Orig')
 
 
 Z = [0]
@@ -172,9 +172,9 @@ print('Orig ',Te/keV)
 # Plotting emission spot
 emission_spot = ece.view_spot
 
-plt.close('ECE Orig')
-plt.figure(num='ECE Orig')
-plt.contour(ece.X1D, ece.Y1D, emission_spot[:,:], levels=20)
+# plt.close('ECE Orig')
+# plt.figure(num='ECE Orig')
+# plt.contour(ece.X1D, ece.Y1D, emission_spot[:,:], levels=20)
 
 #plt.show()
 
@@ -186,13 +186,13 @@ ece.auto_adjust_mesh(fine_coeff=1)
 
 ece.X1D.shape
 
-#plt.figure()
-plt.close('Grid Orig')
-plt.figure(num='Grid Orig')
-plt.plot(ece.X1D)
-plt.xlabel('array indices')
-plt.ylabel('X(cm)')
-plt.title('Auto mesh in X')
+# #plt.figure()
+# plt.close('Grid Orig')
+# plt.figure(num='Grid Orig')
+# plt.plot(ece.X1D)
+# plt.xlabel('array indices')
+# plt.ylabel('X(cm)')
+# plt.title('Auto mesh in X')
 
 
 
@@ -205,7 +205,7 @@ m3d_profile = m3d_profile.create_profile('ecei2d') # Should start at same point 
 m3d_profile.setup_interps()
 m3d_pcp = PlasmaCharProfile(m3d_profile)
 
-
+ax = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
 
 Te_samp = []
 r_sample_values = [230, 220, 210, 200, 190]
@@ -279,7 +279,7 @@ for r_samp in r_sample_values:
 Te_samp = np.array(Te_samp)
 print(Te_samp.shape)
 
-ax = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
+
 
 
 ax.plot(Te_samp[:,0],Te_samp[:,1],'*',label=r'Reconst. T$_\mathrm{e}$')

@@ -63,7 +63,7 @@ def plot_profiles_resonances(p2d,pc,name):
     plt.setp(ax.get_xticklabels(), visible=False)
     #ax.xlabel('R(cm)')
     ax.grid()
-    #ax1=ax.copy()
+    ax1=ax
     
     ax=fig.add_subplot(3,3,7,sharex=ax)
     ax.plot(R1D, p2d.B0[mid_Z, :]*1e-4)
@@ -98,6 +98,7 @@ def plot_profiles_resonances(p2d,pc,name):
 
 ###############################################################################
 # We will use a uniform Te profile to do the benchmarks
+print('Running orig example')
 Te0 = 10*keV
 ne0 = 2e13
 tp.set_parameter2D(Te_0 = Te0, ne_0=ne0, Te_shape='uniform', ne_shape='Hmode')
@@ -210,6 +211,7 @@ Te_samp = []
 r_sample_values = [230, 220, 210, 200, 190]
 
 for r_samp in r_sample_values:
+    print('Running sample: %d'%r_samp)
     r_samp = np.array()
     m3d_pcp.set_coords([np.zeros((5,)),r_samp])
     omega_m3d = 2*m3d_pcp.omega_ce

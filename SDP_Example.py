@@ -18,7 +18,7 @@ try:
 except: from scipy.integrate import trapz, cumtrapz
 import numpy.fft as fft
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
+from matplotlib import rcParams,rc
 
 sys.path.append('/home/rianc/Documents/Synthetic-Diagnostics-Platform/src/python3/')
 from sdp.settings.unitsystem import cgs
@@ -30,6 +30,10 @@ from sdp.diagnostic.ecei.ecei2d import ECE2D, ECEImagingSystem, GaussianAntenna
 
 rcParams['figure.figsize'] = [9, 6]
 rcParams['font.size'] = 18
+rcParams.update(rcParamsDefault)
+rc('font',**{'family':'serif','serif':['Palatino']})
+rc('font',**{'size':11})
+rc('text', usetex=True)
 
 c = cgs['c']
 keV = cgs['keV']

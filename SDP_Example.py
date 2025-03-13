@@ -63,6 +63,7 @@ def plot_profiles_resonances(p2d,pc,name):
     plt.setp(ax.get_xticklabels(), visible=False)
     #ax.xlabel('R(cm)')
     ax.grid()
+    ax1=ax.copy()
     
     ax=fig.add_subplot(3,3,7,sharex=ax)
     ax.plot(R1D, p2d.B0[mid_Z, :]*1e-4)
@@ -91,6 +92,8 @@ def plot_profiles_resonances(p2d,pc,name):
     ax.grid()
 
     plt.show()
+    
+    return ax1
 
 
 ###############################################################################
@@ -130,20 +133,6 @@ print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega))
 k = omega/c
 
 
-###############################################################
-m3d_profile = M3DC1_Loader() 
-m3d_profile = m3d_profile.create_profile('ecei2d') # Should start at same point as p2d_uni
-m3d_profile.setup_interps()
-m3d_pcp = PlasmaCharProfile(m3d_profile)
-
-plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
-
-r_samp = np.array([230, 220, 210, 200, 190])
-m3d_pcp.set_coords([np.zeros((5,)),r_samp])
-omega_m3d = 2*m3d_pcp.omega_ce
-print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega_m3d))
-
-k_m3d = omega_m3d/c
 
 
 ###############################################################
@@ -156,16 +145,6 @@ detector = GaussianAntenna(omega_list=[omega], k_list=[k], power_list=[1], waist
 ece = ECE2D(plasma=p2d_uni, detector=detector, polarization='X', max_harmonic=2, max_power=2, 
                 weakly_relativistic=True, isotropic=True)
 
-###############################################################
-# single frequency detector
-# waist_x: in propagation direction, where is "focal point"
-detector_m3d = GaussianAntenna(omega_list=omega_m3d, k_list=k_m3d, power_list=[1,1,1,1,1], waist_x=230, waist_y=0, w_0y=1)
-
-# Single Channel ECE2D
-
-
-ece_m3d = ECE2D(plasma=m3d_profile, detector=detector_m3d, polarization='X', max_harmonic=2, max_power=2, 
-                weakly_relativistic=True, isotropic=True)
 
 #raise Exception
 ###################################3
@@ -184,21 +163,7 @@ Te = ece.diagnose()
 
 
 print('Orig ',Te/keV)
-##########################################3
-# Create mesh
-X1D = np.linspace(240, 130, 100)
-Y1D = np.linspace(-20, 20, 65)
-Z1D = np.linspace(-20, 20, 65)
 
-# set_coords needs to be called before running any other methods in ECE2D
-ece_m3d.set_coords([Z1D, Y1D, X1D])
-
-
-# we diagnose the equilibrium plasma with no auto coordinates adjustment. Keep more information by setting debug=True
-Te = ece_m3d.diagnose()
-
-
-print('M3D ',Te/keV)
 
 #raise Exception
 #########################
@@ -233,34 +198,85 @@ plt.title('Auto mesh in X')
 ece.diagnose()
 
 print('Orig ',ece.Te/keV)
-###############################################3
-# Plotting emission spot
-emission_spot_m3d = ece_m3d.view_spot
+###############################################################
+m3d_profile = M3DC1_Loader() 
+m3d_profile = m3d_profile.create_profile('ecei2d') # Should start at same point as p2d_uni
+m3d_profile.setup_interps()
+m3d_pcp = PlasmaCharProfile(m3d_profile)
 
-plt.close('ECE New')
-plt.figure(num='ECE New')
-plt.contour(ece_m3d.X1D, ece_m3d.Y1D, emission_spot_m3d[:,:], levels=20)
+
+
+Te_samp = []
+r_sample_values = [230, 220, 210, 200, 190]
+
+for r_samp in r_sample_values:
+    r_samp = np.array()
+    m3d_pcp.set_coords([np.zeros((5,)),r_samp])
+    omega_m3d = 2*m3d_pcp.omega_ce
+    print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega_m3d))
+    
+    k_m3d = omega_m3d/c
+    ###############################################################
+    # single frequency detector
+    # waist_x: in propagation direction, where is "focal point"
+    detector_m3d = GaussianAntenna(omega_list=omega_m3d, k_list=k_m3d, power_list=[1,1,1,1,1], waist_x=230, waist_y=0, w_0y=1)
+    
+    # Single Channel ECE2D
+    
+    
+    ece_m3d = ECE2D(plasma=m3d_profile, detector=detector_m3d, polarization='X', max_harmonic=2, max_power=2, 
+                    weakly_relativistic=True, isotropic=True)
+    
+    ##########################################3
+    # Create mesh
+    X1D = np.linspace(240, 130, 100)
+    Y1D = np.linspace(-20, 20, 65)
+    Z1D = np.linspace(-20, 20, 65)
+    
+    # set_coords needs to be called before running any other methods in ECE2D
+    ece_m3d.set_coords([Z1D, Y1D, X1D])
+    
+    
+    # we diagnose the equilibrium plasma with no auto coordinates adjustment. Keep more information by setting debug=True
+    Te = ece_m3d.diagnose()
+    
+    
+    print('M3D ',Te/keV)
+    ###############################################3
+    # Plotting emission spot
+    emission_spot_m3d = ece_m3d.view_spot
+    
+    plt.close('ECE New')
+    plt.figure(num='ECE New')
+    plt.contour(ece_m3d.X1D, ece_m3d.Y1D, emission_spot_m3d[:,:], levels=20)
+    
+    plt.show()
+    
+    
+    
+    ece_m3d.auto_adjust_mesh(fine_coeff=1)
+    
+    
+    
+    ece_m3d.X1D.shape
+    
+    plt.close('Grid New')
+    plt.figure(num='Grid New')
+    plt.plot(ece_m3d.X1D)
+    plt.xlabel('array indices')
+    plt.ylabel('X(cm)')
+    plt.title('Auto mesh in X')
+    
+    
+    
+    ece_m3d.diagnose()
+    
+    print('M3D ',ece_m3d.Te/keV)
+    Te_samp.append([r_samp,ece_m3d.Te/keV])
+
+ax = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1')
+
+Te_samp = np.array(Te_samp)
+ax.plot(Te_samp[:,0],Te_samp[:,1],'*',label=r'Reconst. T$_\mathrm{e}$')
 
 plt.show()
-
-
-
-ece_m3d.auto_adjust_mesh(fine_coeff=1)
-
-
-
-ece_m3d.X1D.shape
-
-plt.close('Grid New')
-plt.figure(num='Grid New')
-plt.plot(ece_m3d.X1D)
-plt.xlabel('array indices')
-plt.ylabel('X(cm)')
-plt.title('Auto mesh in X')
-
-
-
-ece_m3d.diagnose()
-
-print('M3D ',ece_m3d.Te/keV)
-

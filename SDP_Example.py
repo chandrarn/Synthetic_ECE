@@ -55,7 +55,7 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
     #ax.xlabel('R(cm)')
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.grid()
-    if doLim: ax.set_xlim([185,240]
+    if doLim: ax.set_xlim([185,240])
     
     ax=fig.add_subplot(3,3,4,sharex=ax)
     ax.plot(R1D, p2d.Te0[mid_Z, :]/keV)

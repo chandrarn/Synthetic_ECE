@@ -55,6 +55,7 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
     #ax.xlabel('R(cm)')
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.grid()
+    if doLim: ax.set_xlim([185,240]
     
     ax=fig.add_subplot(3,3,4,sharex=ax)
     ax.plot(R1D, p2d.Te0[mid_Z, :]/keV)
@@ -63,7 +64,7 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
     plt.setp(ax.get_xticklabels(), visible=False)
     #ax.xlabel('R(cm)')
     ax.grid()
-    if doLim: ax.set_xlim([190,240])
+    if doLim: ax.set_xlim([185,240])
     ax1=ax
     
     ax=fig.add_subplot(3,3,7,sharex=ax)
@@ -73,8 +74,8 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
     ax.set_xlabel('R [cm]')
     ax.grid()
     if doLim: 
-        ax.set_xlim([190,240])
-        ax.set_ylim([7,12])
+        ax.set_xlim([185,240])
+        ax.set_ylim([7,14])
     
     omega = 1e11*twopi
 
@@ -95,7 +96,7 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
     ax.yaxis.tick_right()
     ax.grid()
     if doLim: 
-        ax.set_xlim([190,240])
+        ax.set_xlim([185,240])
         ax.set_ylim([60,800])
 
     plt.show()

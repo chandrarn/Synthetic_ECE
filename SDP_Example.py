@@ -213,7 +213,7 @@ r_sample_values = [230, 220, 210, 200, 190]
 for r_samp in r_sample_values:
     print('Running sample: %d'%r_samp)
     #r_samp = np.array()
-    m3d_pcp.set_coords([np.zeros((5,)),r_samp])
+    m3d_pcp.set_coords([0,r_samp])
     omega_m3d = 2*m3d_pcp.omega_ce
     print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega_m3d))
     

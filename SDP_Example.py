@@ -109,108 +109,117 @@ def plot_profiles_resonances(p2d,pc,name,doLim=False):
 
 
 ###############################################################################
-# We will use a uniform Te profile to do the benchmarks
-print('Running orig example')
-Te0 = 10*keV
-ne0 = 2e13
-tp.set_parameter2D(Te_0 = Te0, ne_0=ne0, Te_shape='uniform', ne_shape='Hmode')
-p2d_uni = tp.create_profile2D() # At this step, obj is type ECEI_Profile, same as M3DC1_Loader
-p2d_uni.setup_interps()
+def orig_example():
+    # We will use a uniform Te profile to do the benchmarks
+    print('Running orig example')
+    Te0 = 20*keV
+    ne0 = 4e13
+    tp.set_parameter2D(Te_0 = Te0, ne_0=ne0, Te_shape='uniform', ne_shape='Hmode')
+    p2d_uni = tp.create_profile2D() # At this step, obj is type ECEI_Profile, same as M3DC1_Loader
+    p2d_uni.setup_interps()
+    
+    
+    
+    tp.show_parameter2D()
+    
+    print(p2d_uni.physical_quantities())
+    
+    
+    
+    
+    #pcp_uni = PlasmaCharProfile(p2d_uni)
+    
+    # Load ECE/ECEI Diagnostics
+    # Gaussian Antenna
+    R0 = tp.Parameter2D['R_0']
+    # calculate the local electron cyclotron frequency using the PlasmaCharProfile class
+    pcp_uni = PlasmaCharProfile(p2d_uni)
+    plot_profiles_resonances(p2d_uni,pcp_uni,'_Orig')
+    
+    
+    Z = [0]
+    R = [R0+20]
+    #
+    print(R)
+    pcp_uni.set_coords([Z,R])
+    omega = 2*pcp_uni.omega_ce[0]
+    print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega))
+    
+    k = omega/c
+    
+    
+    
+    
+    ###############################################################
+    # single frequency detector
+    detector = GaussianAntenna(omega_list=[omega], k_list=[k], power_list=[1], waist_x=175, waist_y=0, w_0y=2)
+    
+    # Single Channel ECE2D
+    
+    
+    ece = ECE2D(plasma=p2d_uni, detector=detector, polarization='X', max_harmonic=2, max_power=2, 
+                    weakly_relativistic=True, isotropic=True)
+    
+    
+    #raise Exception
+    ###################################3
+    
+    # Create mesh
+    X1D = np.linspace(250, 170, 100)
+    Y1D = np.linspace(-20, 20, 65)
+    Z1D = np.linspace(-20, 20, 65)
+    
+    # set_coords needs to be called before running any other methods in ECE2D
+    ece.set_coords([Z1D, Y1D, X1D])
+    
+    
+    # we diagnose the equilibrium plasma with no auto coordinates adjustment. Keep more information by setting debug=True
+    Te = ece.diagnose(debug=True)
+    
+    
+    print('Orig ',Te/keV)
+    # print(ece.E0_list)
+    
+    
+    #raise Exception
+    #########################
+    
+    # Plotting emission spot
+    emission_spot = ece.view_spot
+    
+    plt.close('ECE Orig_O')
+    plt.figure(num='ECE Orig_O')
+    plt.contour(ece.X1D, ece.Y1D, emission_spot[:,:], levels=20)
+    
+    #plt.show()
+    
+    
+    
+    ece.auto_adjust_mesh(fine_coeff=2)
+    
+    
+    
+    ece.X1D.shape
+    
+    # #plt.figure()
+    plt.close('Grid Orig_O')
+    plt.figure(num='Grid Orig_O')
+    plt.plot(ece.X1D)
+    plt.xlabel('array indices')
+    plt.ylabel('X(cm)')
+    plt.title('Auto mesh in X')
+    
+    
+    
+    ece.diagnose()
+    
+    print('Orig ',ece.Te/keV)
+    
+    return ece
 
+ece_X =orig_example()
 
-
-tp.show_parameter2D()
-
-print(p2d_uni.physical_quantities())
-
-
-
-
-#pcp_uni = PlasmaCharProfile(p2d_uni)
-
-# Load ECE/ECEI Diagnostics
-# Gaussian Antenna
-R0 = tp.Parameter2D['R_0']
-# calculate the local electron cyclotron frequency using the PlasmaCharProfile class
-pcp_uni = PlasmaCharProfile(p2d_uni)
-# plot_profiles_resonances(p2d_uni,pcp_uni,'_Orig')
-
-
-Z = [0]
-R = [R0]
-#
-pcp_uni.set_coords([Z,R])
-omega = 2*pcp_uni.omega_ce[0]
-print('2nd ECE harmonic frequency: {0} (rad/s)'.format(omega))
-
-k = omega/c
-
-
-
-
-###############################################################
-# single frequency detector
-detector = GaussianAntenna(omega_list=[omega], k_list=[k], power_list=[1], waist_x=175, waist_y=0, w_0y=2)
-
-# Single Channel ECE2D
-
-
-ece = ECE2D(plasma=p2d_uni, detector=detector, polarization='X', max_harmonic=2, max_power=2, 
-                weakly_relativistic=True, isotropic=True)
-
-
-#raise Exception
-###################################3
-
-# Create mesh
-X1D = np.linspace(250, 150, 100)
-Y1D = np.linspace(-20, 20, 65)
-Z1D = np.linspace(-20, 20, 65)
-
-# set_coords needs to be called before running any other methods in ECE2D
-ece.set_coords([Z1D, Y1D, X1D])
-
-
-# we diagnose the equilibrium plasma with no auto coordinates adjustment. Keep more information by setting debug=True
-Te = ece.diagnose()
-
-
-print('Orig ',Te/keV)
-
-
-#raise Exception
-#########################
-
-# Plotting emission spot
-emission_spot = ece.view_spot
-
-# plt.close('ECE Orig')
-# plt.figure(num='ECE Orig')
-# plt.contour(ece.X1D, ece.Y1D, emission_spot[:,:], levels=20)
-
-#plt.show()
-
-
-
-ece.auto_adjust_mesh(fine_coeff=1)
-
-
-
-ece.X1D.shape
-
-# #plt.figure()
-# plt.close('Grid Orig')
-# plt.figure(num='Grid Orig')
-# plt.plot(ece.X1D)
-# plt.xlabel('array indices')
-# plt.ylabel('X(cm)')
-# plt.title('Auto mesh in X')
-
-
-
-ece.diagnose()
-
-print('Orig ',ece.Te/keV)
+raise Exception
 ###############################################################
 m3d_profile = M3DC1_Loader() 
 m3d_profile = m3d_profile.create_profile('ecei2d') # Should start at same point as p2d_uni
@@ -220,7 +229,7 @@ m3d_pcp = PlasmaCharProfile(m3d_profile)
 ax,fig = plot_profiles_resonances(m3d_profile,m3d_pcp,'_M3D-C1',doLim=True)
 plt.show()
 Te_samp = []
-r_sample_values = [230, 220, 210, 200, 190]
+r_sample_values = [230, 190]
 
 for r_samp in r_sample_values:
     print('Running sample: %d'%r_samp)
@@ -238,7 +247,7 @@ for r_samp in r_sample_values:
     # Single Channel ECE2D
     
     
-    ece_m3d = ECE2D(plasma=m3d_profile, detector=detector_m3d, polarization='X', max_harmonic=2, max_power=2, 
+    ece_m3d = ECE2D(plasma=m3d_profile, detector=detector_m3d, polarization='O', max_harmonic=2, max_power=2, 
                     weakly_relativistic=True, isotropic=True)
     
     ##########################################3
